@@ -11,10 +11,17 @@ import {
   GET_REPOS
 } from '../types';
 
-//Variables
+let githubClientId;
+let githubClientSecret;
 const url = 'https://api.github.com';
-const id = process.env.REACT_APP_GITHUB_CLIENT_ID;
-const secret = process.env.REACT_APP_GITHUB_CLIENT_SECRET;
+
+if(process.env.NODE_ENV !== 'production') {
+  githubClientId = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  githubClientSecret = process.env.REACT_APP_GITHUB_CLIENT_SECRET;
+} else {
+  githubClientId = process.env.GITHUB_CLIENT_ID;
+  githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
+}
 
 const GithubState = props => {
   const initialState = {
@@ -29,7 +36,7 @@ const GithubState = props => {
   //Initial Users
   const getInitialUsers = async () => {
     setLoading();
-    const endpoint = `${url}/users?client_id=${id}&client_secret=${secret}`;
+    const endpoint = `${url}/users?client_id=${githubClientId}&client_secret=${githubClientSecret}`;
     const res = await axios.get(endpoint);
     dispatch({
       type: INITIAL_USERS,
@@ -46,7 +53,7 @@ const GithubState = props => {
   //Search for Github Users with Input Form
   const searchUsers = async (text) => {
     setLoading();
-    const endpoint = `${url}/search/users?q=${text}&client_id=${id}&client_secret=${secret}`;
+    const endpoint = `${url}/search/users?q=${text}&client_id=${githubClientId}&client_secret=${githubClientSecret}`;
     const res = await axios.get(endpoint);
     dispatch({
       type: SEARCH_USERS,
@@ -57,7 +64,7 @@ const GithubState = props => {
   //Get a single Github User
   const getUser = async (username) => {
     setLoading();
-    const endpoint = `${url}/users/${username}?client_id=${id}&client_secret=${secret}`;
+    const endpoint = `${url}/users/${username}?client_id=${githubClientId}&client_secret=${githubClientSecret}`;
     const res = await axios.get(endpoint);
     dispatch({
       type: GET_USER,
@@ -68,7 +75,7 @@ const GithubState = props => {
   //Get Users Github Repos
   const getUserRepos = async (username) => {
     setLoading();
-    const endpoint = `${url}/users/${username}/repos?per_page=5&sort=created:asc&client_id=${id}&client_secret=${secret}`;
+    const endpoint = `${url}/users/${username}/repos?per_page=5&sort=created:asc&client_id=${githubClientId}&client_secret=${githubClientSecret}`;
     const res = await axios.get(endpoint);
     dispatch({
       type: GET_REPOS,
